@@ -1,0 +1,82 @@
+#include<iostream>
+#include<vector>
+template<typename T>
+int ShootingMethod(T  *A,T *B,T *C,T *F,T*X,int n) //A B C F 作为传入数据的指针 n代表B的长度************
+	                                               //X   用于存放计算结果
+{
+	if (A==NULL||B==NULL||C==NULL||F==NULL||n<3)
+	{
+		cout<<"There is NULL in A,B,C,F!";
+		return 1;
+	}
+	vector<T> x; //用于存放解//
+	vector<T> a;
+	vector<T> b;
+	vector<T> c;
+	vector<T> f;
+	// 数值传递 ********************
+	for (int i=0;i<n-1;i++){
+		a.insert(a.end(),A[i]);
+	}
+	for (int i=0;i<n;i++){
+		b.insert(b.end(),B[i]);
+	}
+	for (int i=0;i<n-1;i++){
+		c.insert(c.end(),C[i]);
+	}
+	for (int i=0;i<n;i++){
+		f.insert(f.end(),F[i]);
+	}
+	if ((b.size()!=a.size()+1)||(b.size()!=c.size()+1))
+	{
+		cout<<"wrong in a b c!";
+		return 1;
+	}
+	// 数值传递结束 ********************
+	// 开始计算 分为追和赶两个过程 ****************
+	// 追过程              ************************
+	vector<T> u;
+	vector<T> q;
+	vector<T> y;
+	u.push_back(b[0]);
+	q.push_back(c[0]/u[0]);
+	y.push_back(f[0]/u[0]);	
+	for(int i=1;i<n;i++)
+	{
+		u.push_back(b[i]-a[i-1]*q[i-1]);
+		if (i!=n-1){
+			q.push_back(c[i]/u[i]);
+		}		
+		y.push_back((f[i]-a[i-1]*y[i-1])/u[i]);
+	}
+	// 赶过程              ************************
+	for (int i=n-2;i>=0;i--)
+	{    
+		y[i]=y[i]-q[i]*y[i+1]; //
+	}	;
+	//把计算结果返回i  ****************************
+	int i=0;
+	for(vector<T>::iterator it=y.begin();it!=y.end();it++,i++)
+		X[i]=*it;
+	return 0;
+}
+
+using namespace std;
+int main()
+{
+	int n=3;
+	double *a=new double(n-1);
+	double *b=new double(n);
+	double *c=new double(n-1);
+	double *f=new double(n);
+	a[0]=3;a[1]=4;
+	b[0]=2;b[1]=2;b[2]=5;
+	c[0]=7;c[1]=9;
+	f[0]=5;f[1]=6;f[2]=7;
+	ShootingMethod(a,b,c,f,f,n);
+	for (int i=0;i<n;i++){
+		cout<<f[i]<<endl;
+	}
+	system("PAUSE");
+	return 0;
+}
